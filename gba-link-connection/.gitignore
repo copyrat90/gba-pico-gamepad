@@ -1,0 +1,8 @@
+# Directories
+build
+.vscode
+
+# Files
+*.elf
+*.gba
+*.sav
