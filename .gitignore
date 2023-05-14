@@ -1,0 +1,12 @@
+
+# directory
+.vscode/
+build/
+
+# gba
+*.gba
+*.elf
+*.sav
+
+# pico
+*.uf2
