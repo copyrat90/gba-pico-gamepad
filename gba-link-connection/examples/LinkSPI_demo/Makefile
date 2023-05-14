@@ -141,7 +141,7 @@ LIBDIRS		:= $(TONCLIB) $(PWD)/../_lib/libugba
 
 # --- switches ---
 
-bMB		:= 0	# Multiboot build
+bMB		:= 1	# Multiboot build
 bTEMPS	:= 0	# Save gcc temporaries (.i and .s files)
 bDEBUG2	:= 0	# Generate debug info (bDEBUG2? Not a full DEBUG flag. Yet)
 
@@ -247,11 +247,15 @@ $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
 	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 	arm-none-eabi-nm -Sn $(OUTPUT).elf > $(BUILD)/$(TARGET).map
+	mv $(OUTPUT).gba tmp.gba
+	./pad16.sh tmp.gba
+	mv tmp.gba $(OUTPUT).gba
 
 all	: $(BUILD)
 
 clean:
 	@echo clean ...
+	@rm -rf tmp.gba
 	@rm -rf $(BUILD) $(TARGET).elf $(TARGET).gba $(TARGET).sav
 
 
