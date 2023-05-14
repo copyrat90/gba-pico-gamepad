@@ -1,0 +1,3 @@
+[submodule "GP2040-CE/www"]
+	path = GP2040-CE/www
+	url = https://github.com/OpenStickCommunity/WebConfigurator
