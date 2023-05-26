@@ -23,7 +23,8 @@ And that's about it.
 
 # Usage
 
-1. Download the `gba-pico-gamepad-v*.uf2` binary from the [Release](https://github.com/copyrat90/gba-pico-gamepad/releases).
+1. Download the `gba-pico-gamepad-v*.uf2` binary from the [Release](https://github.com/copyrat90/gba-pico-gamepad/releases), and flash it to your RPi Pico.
+    * You may have to [nuke your RPi Pico](https://www.raspberrypi.org/documentation/pico/getting-started/static/6f6f31460c258138bd33cc96ddd76b91/flash_nuke.uf2) before flashing it.
 
 2. Cut your GBA link cable, and wire it to the RPi Pico as below.
     * RPi Pico `21` (`SPI0 RX`) pin <-> GBA `SO` pin
