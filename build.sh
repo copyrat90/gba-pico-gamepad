@@ -11,8 +11,8 @@ echo -e "#pragma once\ninline constexpr " > gba_rom.hpp
 xxd -i LinkSPI_demo.mb.gba >> gba_rom.hpp
 
 cd ../GP2040-CE/
-mkdir build/
+mkdir -p build/
 cd build/
-cmake ..
+cmake ../ -D PICO_SDK_FETCH_FROM_GIT=true
 make -j16
 cp GP2040-CE_0.7.1_Pico.uf2 ../../build/gba-pico-gamepad.uf2
