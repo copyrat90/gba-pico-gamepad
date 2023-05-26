@@ -1,6 +1,9 @@
 /*
  * SPDX-License-Identifier: MIT
  * SPDX-FileCopyrightText: Copyright (c) 2021 Jason Skuby (mytechtoybox.com)
+ * 
+ * This is an altered version of source (by copyrat90),
+ * so that `Gamepad::read()` receives keypress from GBA via SPI.
  */
 
 // GP2040 Libraries
@@ -10,6 +13,8 @@
 #include "FlashPROM.h"
 #include "CRC32.h"
 
+#include "spi32.h"
+
 // MUST BE DEFINED for mpgs
 uint32_t getMillis() {
 	return to_ms_since_boot(get_absolute_time());
@@ -18,7 +23,6 @@ uint32_t getMillis() {
 uint64_t getMicro() {
 	return to_us_since_boot(get_absolute_time());
 }
-
 
 static HIDReport hidReport
 {
@@ -118,21 +122,13 @@ void Gamepad::setup()
 		mapButtonA1, mapButtonA2
 	};
 
-	for (int i = 0; i < GAMEPAD_DIGITAL_INPUT_COUNT; i++)
-	{
-		if (gamepadMappings[i]->isAssigned())
-		{
-			gpio_init(gamepadMappings[i]->pin);             // Initialize pin
-			gpio_set_dir(gamepadMappings[i]->pin, GPIO_IN); // Set as INPUT
-			gpio_pull_up(gamepadMappings[i]->pin);          // Set as PULLUP
-		}
-	}
-
-	#ifdef PIN_SETTINGS
-		gpio_init(PIN_SETTINGS);             // Initialize pin
-		gpio_set_dir(PIN_SETTINGS, GPIO_IN); // Set as INPUT
-		gpio_pull_up(PIN_SETTINGS);          // Set as PULLUP
-	#endif
+	// Enable SPI 0 at 1 MHz and connect to GPIOs
+	spi_init(spi_default, 1000 * 1000);
+	gpio_set_function(PICO_DEFAULT_SPI_RX_PIN, GPIO_FUNC_SPI);
+	gpio_set_function(PICO_DEFAULT_SPI_SCK_PIN, GPIO_FUNC_SPI);
+	gpio_set_function(PICO_DEFAULT_SPI_TX_PIN, GPIO_FUNC_SPI);
+	gpio_set_function(PICO_DEFAULT_SPI_CSN_PIN, GPIO_FUNC_SPI);
+    spi_set_format(spi0, 8, SPI_CPOL_1, SPI_CPHA_1, SPI_MSB_FIRST);
 
 	hotkeyF1Up    =	options.hotkeyF1Up;
 	hotkeyF1Down  =	options.hotkeyF1Down;
@@ -187,38 +183,43 @@ void Gamepad::process()
 
 void Gamepad::read()
 {
-	// Need to invert since we're using pullups
-	uint32_t values = ~gpio_get_all();
+	constexpr uint32_t GBA_SPI_ERROR = 0xFFFFFFFFu;
 
-	#ifdef PIN_SETTINGS
-	state.aux = 0
-		| ((values & (1 << PIN_SETTINGS)) ? (1 << 0) : 0)
-	;
-	#endif
+	enum GBAKey : uint32_t {
+		A = 1 << 0,
+		B = 1 << 1,
+		SELECT = 1 << 2,
+		START = 1 << 3,
+		RIGHT = 1 << 4,
+		LEFT = 1 << 5,
+		UP = 1 << 6,
+		DOWN = 1 << 7,
+		R = 1 << 8,
+		L = 1 << 9
+	};
 
-	state.dpad = 0
-		| ((values & mapDpadUp->pinMask)    ? (options.invertYAxis ? mapDpadDown->buttonMask : mapDpadUp->buttonMask) : 0)
-		| ((values & mapDpadDown->pinMask)  ? (options.invertYAxis ? mapDpadUp->buttonMask : mapDpadDown->buttonMask) : 0)
-		| ((values & mapDpadLeft->pinMask)  ? mapDpadLeft->buttonMask  : 0)
-		| ((values & mapDpadRight->pinMask) ? mapDpadRight->buttonMask : 0)
-	;
+	uint32_t received = spi32(state.buttons);
 
-	state.buttons = 0
-		| ((values & mapButtonB1->pinMask)  ? mapButtonB1->buttonMask  : 0)
-		| ((values & mapButtonB2->pinMask)  ? mapButtonB2->buttonMask  : 0)
-		| ((values & mapButtonB3->pinMask)  ? mapButtonB3->buttonMask  : 0)
-		| ((values & mapButtonB4->pinMask)  ? mapButtonB4->buttonMask  : 0)
-		| ((values & mapButtonL1->pinMask)  ? mapButtonL1->buttonMask  : 0)
-		| ((values & mapButtonR1->pinMask)  ? mapButtonR1->buttonMask  : 0)
-		| ((values & mapButtonL2->pinMask)  ? mapButtonL2->buttonMask  : 0)
-		| ((values & mapButtonR2->pinMask)  ? mapButtonR2->buttonMask  : 0)
-		| ((values & mapButtonS1->pinMask)  ? mapButtonS1->buttonMask  : 0)
-		| ((values & mapButtonS2->pinMask)  ? mapButtonS2->buttonMask  : 0)
-		| ((values & mapButtonL3->pinMask)  ? mapButtonL3->buttonMask  : 0)
-		| ((values & mapButtonR3->pinMask)  ? mapButtonR3->buttonMask  : 0)
-		| ((values & mapButtonA1->pinMask)  ? mapButtonA1->buttonMask  : 0)
-		| ((values & mapButtonA2->pinMask)  ? mapButtonA2->buttonMask  : 0)
-	;
+	if (received == GBA_SPI_ERROR) {
+		state.dpad = 0;
+		state.buttons = 0;
+	} else {
+		state.dpad = 0
+			| ((received & GBAKey::UP)    ? mapDpadUp->buttonMask : 0)
+			| ((received & GBAKey::DOWN)  ? mapDpadDown->buttonMask : 0)
+			| ((received & GBAKey::LEFT)  ? mapDpadLeft->buttonMask  : 0)
+			| ((received & GBAKey::RIGHT) ? mapDpadRight->buttonMask : 0)
+		;
+
+		state.buttons = 0
+			| ((received & GBAKey::B)      ? mapButtonB1->buttonMask  : 0)
+			| ((received & GBAKey::A)      ? mapButtonB2->buttonMask  : 0)
+			| ((received & GBAKey::L)      ? mapButtonL1->buttonMask  : 0)
+			| ((received & GBAKey::R)      ? mapButtonR1->buttonMask  : 0)
+			| ((received & GBAKey::SELECT) ? mapButtonS1->buttonMask  : 0)
+			| ((received & GBAKey::START)  ? mapButtonS2->buttonMask  : 0)
+		;
+	}
 
 	state.lx = GAMEPAD_JOYSTICK_MID;
 	state.ly = GAMEPAD_JOYSTICK_MID;

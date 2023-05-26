@@ -108,6 +108,7 @@ src/addonmanager.cpp
 src/configmanager.cpp
 src/storagemanager.cpp
 src/system.cpp
+src/spi32.cpp
 src/configs/webconfig.cpp
 src/addons/analog.cpp
 src/addons/board_led.cpp
@@ -148,6 +149,7 @@ OneBitDisplay
 ArduinoJson
 rndis
 hardware_adc
+hardware_spi
 WiiExtension
 pico_mbedtls
 TinyUSB_Gamepad

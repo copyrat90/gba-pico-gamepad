@@ -20,8 +20,8 @@
 extern uint32_t getMillis();
 extern uint64_t getMicro();
 
-#define GAMEPAD_POLL_MS 1
-#define GAMEPAD_POLL_MICRO 100
+#define GAMEPAD_POLL_MS 3
+#define GAMEPAD_POLL_MICRO 3000
 
 #define GAMEPAD_FEATURE_REPORT_SIZE 32
 
