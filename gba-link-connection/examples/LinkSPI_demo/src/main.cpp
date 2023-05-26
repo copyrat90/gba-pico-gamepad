@@ -46,7 +46,7 @@ int main() {
     output += "recv: " + std::to_string(remoteKeys) + "\n";
 
     // Print
-    VBlankIntrWait();
+    // VBlankIntrWait();
     log(output);
   }
 
