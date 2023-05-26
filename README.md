@@ -1,23 +1,61 @@
 # gba-pico-gamepad
 
-Proof-of-concept GBA to USB controller, which uses Raspberry Pi Pico as a bridge.
+Proof-of-concept Game Boy Advance (GBA) to USB controller, which uses Raspberry Pi Pico as a bridge.
+
+[![](https://img.youtube.com/vi/JmBufgcb4Gw/hqdefault.jpg)](https://www.youtube.com/watch?v=JmBufgcb4Gw)
+
+
+# How it works
+
+This project is essentially a modified version of [GP2040-CE](https://github.com/OpenStickCommunity/GP2040-CE) that enables communication with the Game Boy Advance using the GBA link cable.
+
+In the original GP2040-CE, key presses were received using pull-up GPIO signals.\
+However, The GBA link cable only provides [6 pins](https://user-images.githubusercontent.com/1631752/124884342-8ee7fc80-dfa8-11eb-9bd2-4741a4b9acc6.png), which is insufficient for the 9 keys on the GBA.\
+To overcome this limitation, GP2040-CE was modified to utilize SPI for receiving packets from the GBA.
+
+To send key presses on the GBA via SPI, an example program from the [gba-link-connection](https://github.com/rodri042/gba-link-connection) was used with a minor modification.
+
+To run this program on the GBA, [gba_03_multiboot](https://github.com/akkera102/gba_03_multiboot) is ported to the RPi Pico.\
+This allows for sending a program from RPi Pico to GBA via SPI and running it, eliminating the need for additional hardware such as a flash cart.
+
+And that's about it.
+
 
 # Usage
 
-1. Download the `gba-pico-gamepad-v*.uf2` binary from the [Release](https://github.com/copyrat90/gba-pico-gamepad/releases), 
+1. Download the `gba-pico-gamepad-v*.uf2` binary from the [Release](https://github.com/copyrat90/gba-pico-gamepad/releases).
 
-2. Wire the GBA to RPi Pico, with your custom GBA link cable.
-    * Default SPI0 Pin is used, so you should wire to the `21`, `24`, `25` pins. [(RPi Pico Pinout)](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf)
+2. Cut your GBA link cable, and wire it to the RPi Pico as below.
+    * RPi Pico `21` (`SPI0 RX`) pin <-> GBA `SO` pin
+    * RPi Pico `23` (`GND`) pin <-> GBA `GND` pin
+    * RPi Pico `24` (`SPI0 SCK`) pin <-> GBA `SC` pin
+    * RPi Pico `25` (`SPI0 TX`) pin <-> GBA `SI` pin
+    * [Raspberry Pi Pico Pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf)
+    * [GBA Link cable Pinout](https://gist.github.com/copyrat90/5be788ccec65f3d3ca3de468203c75b7) ([Image](https://user-images.githubusercontent.com/1631752/124884342-8ee7fc80-dfa8-11eb-9bd2-4741a4b9acc6.png))
+        * Your GBA Link cable colors are likely to be different.\
+          It is highly recommended to cut and open the shell to see your pinout.
 
-3. Turn on the GBA **without a cartridge**.
-    * ROM file is sent from the RPi Pico via multiboot.
+3. Connect this cable to the GBA and turn it on **without a cartridge**.
+    * The program is sent from RPi Pico to GBA via multiboot, and with a cartridge it will not work.
 
-4. Plug the USB Cable to your PC.
+4. Plug the USB Cable to your PC.\
+   It will start sending the program once the GBA is ready.
+    * You can [hold down certain key on boot to change Input Mode.](https://gp2040-ce.info/#/usage?id=input-modes)
+        + Hold `B` on boot -> Nintendo Switch
+        + Hold `A` on boot -> XInput
+        + The other options cannot be pressed with keys on the GBA,\
+          but no modifications are done yet to deal with that.
+    * You can [change the D-Pad Mode anytime with certain key combination.](https://gp2040-ce.info/#/usage?id=d-pad-modes)
+    * GP2040-CE's Web Config is disabled.
+
+5. Enjoy your GBA as an USB gamepad.
+    * If you accidentally pulled out your cable, you can re-plug it and press `L` to reconnect.
+
 
 # Build
 
-I tested building on Ubuntu 22.04 in WSL2.\
-You have to use [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) if you're on Windows.
+This is a build process for the Ubuntu 22.04.\
+You have to use [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) if you are on Windows.
 
 1. Install [devkitARM](https://devkitpro.org/wiki/Getting_Started) and `gba-dev` package.
 
@@ -27,7 +65,7 @@ You have to use [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) if
     ```
 
 3. Run this command to build.
-    > Change the path if you've installed devkitARM somewhere else.
+    > Change the path if you have installed devkitARM somewhere else.
     ```bash
     export DEVKITPRO=/opt/devkitpro/
     export DEVKITARM=/opt/devkitpro/devkitARM/
@@ -43,6 +81,9 @@ You have to use [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) if
 
 # Credits
 
+This project is essentially an integration of the projects listed below.\
+Without them, this would not have been possible.
+
 * [gba-link-connection](https://github.com/rodri042/gba-link-connection) : Game Boy Advance (GBA) C++ libraries to interact with the Serial Port.
 * [GP2040-CE](https://github.com/OpenStickCommunity/GP2040-CE) : Gamepad firmware for the Raspberry Pi Pico
 * [gba_03_multiboot](https://github.com/akkera102/gba_03_multiboot) : Raspberry Pi GBA Loader
@@ -52,4 +93,4 @@ You have to use [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) if
 # License
 
 See the license of each project above.\
-`build.sh` is 0BSD.
+`/build.sh` is 0BSD.
