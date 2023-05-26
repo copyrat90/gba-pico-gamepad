@@ -10,6 +10,10 @@
 #include "gp2040.h"
 #include "gp2040aux.h"
 
+// GBA multiboot includes
+#include "gba/multiboot.h"
+#include "../../build/gba_rom.hpp"
+
 // Launch our second core with additional modules loaded in
 void core1() {
 	multicore_lockout_victim_init(); // block core 1
@@ -21,6 +25,9 @@ void core1() {
 }
 
 int main() {
+	// Send GBA program via SPI, which sends its key presses to the RPi Pico
+	gba::sendGBARom(LinkSPI_demo_mb_gba, LinkSPI_demo_mb_gba_len);
+
 	// Create GP2040 Main Core (core0), Core1 is dependent on Core0
 	GP2040 * gp2040 = new GP2040();
 	gp2040->setup();

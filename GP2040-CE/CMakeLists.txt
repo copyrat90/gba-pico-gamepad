@@ -108,7 +108,8 @@ src/addonmanager.cpp
 src/configmanager.cpp
 src/storagemanager.cpp
 src/system.cpp
-src/spi32.cpp
+src/gba/spi32.cpp
+src/gba/multiboot.cpp
 src/configs/webconfig.cpp
 src/addons/analog.cpp
 src/addons/board_led.cpp

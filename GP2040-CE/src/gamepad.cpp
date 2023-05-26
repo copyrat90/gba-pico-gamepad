@@ -13,7 +13,7 @@
 #include "FlashPROM.h"
 #include "CRC32.h"
 
-#include "spi32.h"
+#include "gba/spi32.h"
 
 // MUST BE DEFINED for mpgs
 uint32_t getMillis() {
@@ -123,12 +123,7 @@ void Gamepad::setup()
 	};
 
 	// Enable SPI 0 at 1 MHz and connect to GPIOs
-	spi_init(spi_default, 1000 * 1000);
-	gpio_set_function(PICO_DEFAULT_SPI_RX_PIN, GPIO_FUNC_SPI);
-	gpio_set_function(PICO_DEFAULT_SPI_SCK_PIN, GPIO_FUNC_SPI);
-	gpio_set_function(PICO_DEFAULT_SPI_TX_PIN, GPIO_FUNC_SPI);
-	gpio_set_function(PICO_DEFAULT_SPI_CSN_PIN, GPIO_FUNC_SPI);
-    spi_set_format(spi0, 8, SPI_CPOL_1, SPI_CPHA_1, SPI_MSB_FIRST);
+	gba::initSpi32();
 
 	hotkeyF1Up    =	options.hotkeyF1Up;
 	hotkeyF1Down  =	options.hotkeyF1Down;
@@ -198,7 +193,7 @@ void Gamepad::read()
 		L = 1 << 9
 	};
 
-	uint32_t received = spi32(state.buttons);
+	uint32_t received = gba::spi32(state.buttons);
 
 	if (received == GBA_SPI_ERROR) {
 		state.dpad = 0;
