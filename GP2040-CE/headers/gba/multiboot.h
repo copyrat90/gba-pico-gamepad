@@ -13,7 +13,9 @@
 namespace gba
 {
 
-void sendGBARom(const uint8_t* romAddr, uint32_t romSize);
+/// @return `true`  if ROM is sent
+/// @return `false` if GBA program is already running, and only `L` is pressed on it
+bool sendGBARom(const uint8_t* romAddr, uint32_t romSize);
 
 }
 

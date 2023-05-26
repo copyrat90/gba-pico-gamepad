@@ -22,7 +22,7 @@ uint32_t spi32Delay(uint32_t val) {
     return result;
 }
 
-void sendGBARom(const uint8_t* romAddr, const uint32_t romSize) {
+bool sendGBARom(const uint8_t* romAddr, const uint32_t romSize) {
     initSpi32();
 
     uint32_t recv;
@@ -32,9 +32,13 @@ void sendGBARom(const uint8_t* romAddr, const uint32_t romSize) {
     // printf("Waiting for GBA...\n");
     
     do {
-        recv = gba::spi32(0x6202) >> 16;
+        recv = gba::spi32(0x6202);
         sleep_ms(10);
-    } while (recv != 0x7202);
+    } while ((recv >> 16) != 0x7202 && recv != (1 << 9));
+
+    // if GBA program is already running, and only `L` is pressed on it
+    if (recv == (1 << 9))
+        return false;
     
     // -----------------------------------------------------
     // printf("Sending header.\n");
@@ -141,6 +145,8 @@ void sendGBARom(const uint8_t* romAddr, const uint32_t romSize) {
     // printf("Done.\n");
 
     deinitSpi32();
+
+    return true;
 }
 
 }

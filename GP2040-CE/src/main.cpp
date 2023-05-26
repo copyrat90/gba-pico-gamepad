@@ -26,9 +26,10 @@ void core1() {
 
 int main() {
 	// Send GBA program via SPI, which sends its key presses to the RPi Pico
-	gba::sendGBARom(LinkSPI_demo_mb_gba, LinkSPI_demo_mb_gba_len);
+	bool isAlreadyRunning = !gba::sendGBARom(LinkSPI_demo_mb_gba, LinkSPI_demo_mb_gba_len);
 	// Give user some time to change Input Mode (https://gp2040-ce.info/#/usage?id=input-modes)
-	sleep_ms(3000);
+	if (!isAlreadyRunning)
+		sleep_ms(3000);
 
 	// Create GP2040 Main Core (core0), Core1 is dependent on Core0
 	GP2040 * gp2040 = new GP2040();
