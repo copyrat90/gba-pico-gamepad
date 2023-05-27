@@ -5,10 +5,13 @@
  * https://github.com/akkera102/gba_03_multiboot
  */
 
-#include "gba/spi32.h"
+#include "gba/multiboot.h"
 
 #include <cstdlib>
 #include "pico/stdlib.h"
+
+#include "gba/spi32.h"
+#include "gba/GBAKey.h"
 
 namespace gba
 {
@@ -34,10 +37,10 @@ bool sendGBARom(const uint8_t* romAddr, const uint32_t romSize) {
     do {
         recv = gba::spi32(0x6202);
         sleep_ms(10);
-    } while ((recv >> 16) != 0x7202 && recv != (1 << 9));
+    } while ((recv >> 16) != 0x7202 && recv != (GBAKey::START));
 
-    // if GBA program is already running, and only `L` is pressed on it
-    if (recv == (1 << 9))
+    // if GBA program is already running, and only `Start` is pressed on it
+    if (recv == (GBAKey::START))
         return false;
     
     // -----------------------------------------------------

@@ -14,6 +14,7 @@
 #include "CRC32.h"
 
 #include "gba/spi32.h"
+#include "gba/GBAKey.h"
 
 // MUST BE DEFINED for mpgs
 uint32_t getMillis() {
@@ -179,19 +180,6 @@ void Gamepad::process()
 void Gamepad::read()
 {
 	constexpr uint32_t GBA_SPI_ERROR = 0xFFFFFFFFu;
-
-	enum GBAKey : uint32_t {
-		A = 1 << 0,
-		B = 1 << 1,
-		SELECT = 1 << 2,
-		START = 1 << 3,
-		RIGHT = 1 << 4,
-		LEFT = 1 << 5,
-		UP = 1 << 6,
-		DOWN = 1 << 7,
-		R = 1 << 8,
-		L = 1 << 9
-	};
 
 	uint32_t received = gba::spi32(state.buttons);
 

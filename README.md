@@ -5,7 +5,7 @@ Proof-of-concept Game Boy Advance (GBA) to USB controller, which uses Raspberry 
 [![](https://img.youtube.com/vi/JmBufgcb4Gw/hqdefault.jpg)](https://www.youtube.com/watch?v=JmBufgcb4Gw "Youtube video for gba-pico-gamepad")
 
 
-# How it works
+# How it's done
 
 This project is essentially a modified version of [GP2040-CE](https://github.com/OpenStickCommunity/GP2040-CE) that enables communication with the Game Boy Advance using the GBA link cable.
 
@@ -43,16 +43,17 @@ And that's about it.
 
 4. Plug the USB Cable to your PC.\
    It will start sending the program once the GBA is ready.
-    * You can [hold down certain key on boot to change Input Mode.](https://gp2040-ce.info/#/usage?id=input-modes)
+    * You can hold down certain key on boot to change Input Mode.
+        + Note that the key binding is differ from the [original](https://gp2040-ce.info/#/usage?id=input-modes).
         + Hold `B` on boot -> Nintendo Switch
         + Hold `A` on boot -> XInput
-        + The other options cannot be pressed with keys on the GBA,\
-          but no modifications are done yet to deal with that.
+        + Hold `L` on boot -> DirectInput/PS3
+        + Hold `R` on boot -> PS4
     * You can [change the D-Pad Mode anytime with certain key combination.](https://gp2040-ce.info/#/usage?id=d-pad-modes)
     * GP2040-CE's Web Config is disabled.
 
 5. Enjoy your GBA as an USB gamepad.
-    * If you accidentally pulled out your cable, you can re-plug it and press `L` to reconnect.
+    * If you accidentally pulled out your cable, you can re-plug it and press `Start` to reconnect.
 
 
 # Build

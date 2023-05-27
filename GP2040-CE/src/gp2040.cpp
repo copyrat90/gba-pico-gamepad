@@ -177,11 +177,13 @@ GP2040::BootAction GP2040::getBootAction() {
 
 				if (gamepad->pressedF1() && gamepad->pressedUp()) {
 					return BootAction::ENTER_USB_MODE;
-				} else if (gamepad->pressedS2()) {
-					return BootAction::ENTER_WEBCONFIG_MODE;
-				} else if (gamepad->pressedB3()) { // P1
+				}
+				// else if (gamepad->pressedS2()) {
+				// 	return BootAction::ENTER_WEBCONFIG_MODE;
+				// }
+				  else if (gamepad->pressedL1()) { // P1
 					return BootAction::SET_INPUT_MODE_HID;
-				} else if (gamepad->pressedB4()) { // P2
+				} else if (gamepad->pressedR1()) { // P2
 					return BootAction::SET_INPUT_MODE_PS4;
 				} else if (gamepad->pressedB1()) { // K1
 					return BootAction::SET_INPUT_MODE_SWITCH;

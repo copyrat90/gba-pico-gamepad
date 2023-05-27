@@ -2,8 +2,7 @@
  * SPDX-License-Identifier: CC0-1.0
  */
 
-#ifndef _GBA_SPI32_H_
-#define _GBA_SPI32_H_
+#pragma once
 
 // Pico SPI
 #include "hardware/spi.h"
@@ -18,5 +17,3 @@ void deinitSpi32();
 uint32_t spi32(uint32_t val);
 
 }
-
-#endif
