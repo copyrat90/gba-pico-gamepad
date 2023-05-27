@@ -2,7 +2,7 @@
 
 Proof-of-concept Game Boy Advance (GBA) to USB controller, which uses Raspberry Pi Pico as a bridge.
 
-[![](https://img.youtube.com/vi/JmBufgcb4Gw/hqdefault.jpg)](https://www.youtube.com/watch?v=JmBufgcb4Gw)
+[![](https://img.youtube.com/vi/JmBufgcb4Gw/hqdefault.jpg)](https://www.youtube.com/watch?v=JmBufgcb4Gw "Youtube video for gba-pico-gamepad")
 
 
 # How it works
@@ -31,10 +31,12 @@ And that's about it.
     * RPi Pico `23` (`GND`) pin <-> GBA `GND` pin
     * RPi Pico `24` (`SPI0 SCK`) pin <-> GBA `SC` pin
     * RPi Pico `25` (`SPI0 TX`) pin <-> GBA `SI` pin
+    * ![Overall pinout](https://i.ibb.co/xgZW66y/rpi-pico-pinout.png "Overall pinout")
     * [Raspberry Pi Pico Pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf)
-    * [GBA Link cable Pinout](https://gist.github.com/copyrat90/5be788ccec65f3d3ca3de468203c75b7) ([Image](https://user-images.githubusercontent.com/1631752/124884342-8ee7fc80-dfa8-11eb-9bd2-4741a4b9acc6.png))
+    * [GBA Link cable Pinout](https://gist.github.com/copyrat90/5be788ccec65f3d3ca3de468203c75b7)
         * Your GBA Link cable colors are likely to be different.\
-          It is highly recommended to cut and open the shell to see your pinout.
+        It is highly recommended to cut and open the shell to see your pinout.
+        * ![GBA pinout](https://user-images.githubusercontent.com/1631752/124884342-8ee7fc80-dfa8-11eb-9bd2-4741a4b9acc6.png "GBA pinout")
 
 3. Connect this cable to the GBA and turn it on **without a cartridge**.
     * The program is sent from RPi Pico to GBA via multiboot, and with a cartridge it will not work.
