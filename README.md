@@ -10,7 +10,7 @@ Proof-of-concept Game Boy Advance (GBA) to USB controller, which uses Raspberry 
 This project is essentially a modified version of [GP2040-CE](https://github.com/OpenStickCommunity/GP2040-CE) that enables communication with the Game Boy Advance using the GBA link cable.
 
 In the original GP2040-CE, key presses were received using pull-up GPIO signals.\
-However, The GBA link cable only provides [6 pins](https://user-images.githubusercontent.com/1631752/124884342-8ee7fc80-dfa8-11eb-9bd2-4741a4b9acc6.png), which is insufficient for the 9 keys on the GBA.\
+However, The GBA link cable only provides [4 pins for the communication](https://user-images.githubusercontent.com/1631752/124884342-8ee7fc80-dfa8-11eb-9bd2-4741a4b9acc6.png), which is insufficient for the 10 keys on the GBA.\
 To overcome this limitation, GP2040-CE was modified to utilize SPI for receiving packets from the GBA.
 
 To send key presses on the GBA via SPI, an example program from the [gba-link-connection](https://github.com/rodri042/gba-link-connection) was used with a minor modification.
@@ -19,6 +19,8 @@ To run this program on the GBA, [gba_03_multiboot](https://github.com/akkera102/
 This allows for sending a program from RPi Pico to GBA via SPI and running it, eliminating the need for additional hardware such as a flash cart.
 
 And that's about it.
+
+[Read this with a litte more detail (in Korean)](https://velog.io/@copyrat90/gba-pico-gamepad)
 
 
 # Usage
