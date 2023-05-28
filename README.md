@@ -20,7 +20,7 @@ This allows for sending a program from RPi Pico to GBA via SPI and running it, e
 
 And that's about it.
 
-[Read this with a litte more detail (in Korean)](https://velog.io/@copyrat90/gba-pico-gamepad)
+[Read this in Korean(한국어) with a little more detail](https://velog.io/@copyrat90/gba-pico-gamepad)
 
 
 # Usage
